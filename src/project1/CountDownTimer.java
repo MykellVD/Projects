@@ -249,6 +249,6 @@ public class CountDownTimer {
 
 	//returns suspend
 	public static boolean isSuspended() {
-		return suspend;
+		return suspend;//
 	}
 }
