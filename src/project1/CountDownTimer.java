@@ -1,6 +1,8 @@
+
 package project1;
 
-import java.util.*;
+import java.io.*;
+import java.util.Scanner;
 
 public class CountDownTimer {
 
@@ -8,6 +10,7 @@ public class CountDownTimer {
 	private int minutes;
 	private int seconds;
 
+	private static boolean suspend = false;
 
 	public CountDownTimer() {
 		hours = 0;
@@ -65,6 +68,9 @@ public class CountDownTimer {
 
 	public CountDownTimer(String startTime) {
 		int startTimeLen = startTime.length();
+		if (startTimeLen > 8){
+			throw new IllegalArgumentException();
+		}
 		if (startTimeLen <= 2) {
 			this.seconds = Integer.parseInt(startTime);
 		}
@@ -81,30 +87,35 @@ public class CountDownTimer {
 			this.seconds = Integer.parseInt(startTimeSplit[2]);
 		}
 		else {
-			throw new IllegalArgumentException("Cannot assign " + startTime + " as a starttime");
+			this.hours = 0;
+			this.minutes = 0;
+			this.seconds = 0;
 		}
 	}
 
-	public boolean equals(CountDownTimer other) {
+	public boolean equals(Object other) {
+		boolean rtn = false;
 		if (other == null){
-			throw new IllegalArgumentException("CountDownTimer cannot equal null");
+			throw new IllegalArgumentException();
 		}
 		else if (other instanceof CountDownTimer){
-			if(this.hours == other.hours &&
-					this.minutes == other.minutes &&
-					this.seconds == other.seconds) {
-				return true;
+			if(this.hours == ((CountDownTimer) other).hours &&
+					this.minutes == ((CountDownTimer) other).minutes &&
+					this.seconds == ((CountDownTimer) other).seconds) {
+				rtn = true;
 			}
 			else {
-				return false;
+				rtn = false;
 			}
-		} else {
-			return false;
 		}
+		return rtn;
 	}
 
 	public static boolean equals (CountDownTimer t1, CountDownTimer t2) {
-		return t1.equals(t2);
+		if (t1.equals(t2)){
+			return true;
+		}
+		return false;
 	}
 
 	public int compareTo(CountDownTimer other) {
@@ -193,5 +204,51 @@ public class CountDownTimer {
 
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
+	}
+
+	public void save(String fileName){
+		if (fileName == null)
+			throw new IllegalArgumentException();
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter (new BufferedWriter(new FileWriter(fileName)));
+			out.println(this.hours + "" + this.minutes + "" + this.seconds);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+		finally{
+			out.close();
+		}
+	}
+
+	public void load(String fileName){
+		if (fileName == null)
+			throw new NullPointerException();
+
+		Scanner scanner = null;
+		try{
+			scanner = new Scanner(new File(fileName));
+
+			this.hours = scanner.nextInt();
+			this.minutes = scanner.nextInt();
+			this.seconds = scanner.nextInt();
+		}
+		catch (FileNotFoundException e){
+			throw new NullPointerException();
+		}
+		finally {
+			scanner.close();
+		}
+	}
+
+	//turns on and off all stopWatch object
+	public static void setSuspend(boolean suspend) {
+		CountDownTimer.suspend = suspend;
+	}
+
+	//returns suspend
+	public static boolean isSuspended() {
+		return suspend;
 	}
 }
