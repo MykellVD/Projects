@@ -270,10 +270,19 @@ public class TestCountDownTimer {
 	public void testConstructorStringLargeMinutes() {
 		new CountDownTimer("1:72:32");
 	}
+	@Test (expected = IllegalArgumentException.class) //MVD
+	public void testConstructorStringLargeSeconds() {
+		new CountDownTimer("1:30:82");
+	}
 
 	@Test (expected = IllegalArgumentException.class) //JU
-	public void testConstructorStringLargeSeconds() {
+	public void testConstructorStringLongSeconds() {
 		new CountDownTimer("1:32:1234");
+	}
+
+	@Test (expected = IllegalArgumentException.class) //MVD
+	public void testConstructorStringLongMinutes() {
+		new CountDownTimer("1:3849:12");
 	}
 
 }

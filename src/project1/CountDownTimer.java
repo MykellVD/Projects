@@ -67,22 +67,34 @@ public class CountDownTimer {
 
 	public CountDownTimer(String startTime) {
 		int startTimeLen = startTime.length();
-		if (startTimeLen > 8){
+		if (startTimeLen > 8)
 			throw new IllegalArgumentException();
+		else {
+			String[] startTimeSplit = startTime.split(":");
+			if (startTimeSplit.length == 1 && ) //fix
 		}
+
 		if (startTimeLen <= 2) {
 			this.seconds = Integer.parseInt(startTime);
 		}
 
 		else if (startTimeLen > 3 && startTimeLen <= 5) {
-			String[] startTimeSplit = startTime.split(":");
+			System.out.println(startTimeSplit[0] + "  " + startTimeSplit[1]);
 			this.minutes = Integer.parseInt(startTimeSplit[0]);
 			this.seconds = Integer.parseInt(startTimeSplit[1]);
 		}
+
 		else if (startTimeLen > 6 && startTimeLen <= 8) {
 			String[] startTimeSplit = startTime.split(":");
+			System.out.println(startTimeSplit[0] + "  " + startTimeSplit[1] + "  " + startTimeSplit[2]);
 			this.hours = Integer.parseInt(startTimeSplit[0]);
+
+			if (Integer.parseInt(startTimeSplit[1]) > 59)
+				throw new IllegalArgumentException();
 			this.minutes = Integer.parseInt(startTimeSplit[1]);
+
+			if (Integer.parseInt(startTimeSplit[2]) > 59)
+				throw new IllegalArgumentException();
 			this.seconds = Integer.parseInt(startTimeSplit[2]);
 		}
 		else {
@@ -199,6 +211,8 @@ public class CountDownTimer {
 	}
 
 	public void add(CountDownTimer other) {
+		if (other == null)
+			throw new IllegalArgumentException();
 		this.hours += other.hours;
 		this.minutes += other.minutes;
 		this.seconds += other.seconds;
