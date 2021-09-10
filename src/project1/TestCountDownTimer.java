@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class TestCountDownTimer {
 
@@ -171,7 +172,7 @@ public class TestCountDownTimer {
 
 		assertFalse(s1.equals(s2));
 		assertTrue(s1.equals(s3));
-		assertNotEquals(s3, s1);
+		assertEquals(s3, s1);
 		assertFalse(s1.equals(s4));
 		assertFalse(s1.equals(s5));
 		assertFalse(s1.equals(s6));
@@ -185,4 +186,94 @@ public class TestCountDownTimer {
 		CountDownTimer s = new CountDownTimer();
 		s.equals(null);
 	}
+
+	@Test //JU
+	public void testToString(){
+		CountDownTimer c = new CountDownTimer("5:10:30");
+		assertEquals(c.toString(),"5:10:30");
+
+		c = new CountDownTimer("20:10:8");
+		assertEquals(c.toString(),"20:10:08");
+
+		c = new CountDownTimer("20:8");
+		assertEquals(c.toString(),"0:20:08");
+
+		c = new CountDownTimer("8");
+		assertEquals(c.toString(),"0:00:08");
+	}
+
+	@Test (expected = NumberFormatException.class) //JU
+	public void testToStringBlankHour(){
+		CountDownTimer c = new CountDownTimer(":15:30");
+	}
+
+	@Test (expected = NumberFormatException.class) //JU
+	public void testToStringBlankMin(){
+		CountDownTimer c = new CountDownTimer("6::30");
+	}
+
+	@Test (expected = NumberFormatException.class) //JU
+	public void testToStringBlankSec(){
+		CountDownTimer c = new CountDownTimer("6:15:");
+	}
+
+	@Test //JU
+	public void testAddInt(){
+		CountDownTimer c = new CountDownTimer(5,59,45);
+		c.add(20);
+		assertEquals(c.toString(),"6:00:05");
+	}
+
+	@Test (expected = IllegalArgumentException.class) //JU
+	public void testAddIntNeg(){
+		CountDownTimer c = new CountDownTimer(5,59,45);
+		c.add(-56);
+	}
+
+	@Test //JU
+	public void testStopWatchEquals() {
+		CountDownTimer c1 = new CountDownTimer(1,21,31);
+		CountDownTimer c2 = new CountDownTimer(1,21,31);
+		CountDownTimer c3 = new CountDownTimer(2,32,52);
+
+		assertTrue(CountDownTimer.equals(c1, c2));
+		assertFalse(CountDownTimer.equals(c1, c3));
+	}
+
+	@Test (expected = NullPointerException.class) //JU
+	public void testLoadInvalidFile() {
+		CountDownTimer c = new CountDownTimer();
+		c.load("FakeFile");
+
+	}
+
+	@Test (expected = NullPointerException.class) //JU
+	public void testLoadNullFile() {
+		CountDownTimer c = new CountDownTimer();
+		c.load(null);
+
+	}
+
+	@Test (expected = IllegalArgumentException.class) //JU
+	public void testSaveNullFile() {
+		CountDownTimer c = new CountDownTimer();
+		c.save(null);
+	}
+
+	@Test (expected = IllegalArgumentException.class) //JU
+	public void testAdd2() {
+		CountDownTimer c = new CountDownTimer();
+		c.add(null);
+	}
+
+	@Test (expected = IllegalArgumentException.class) //JU
+	public void testConstructorStringLargeMinutes() {
+		new CountDownTimer("1:72:32");
+	}
+
+	@Test (expected = IllegalArgumentException.class) //JU
+	public void testConstructorStringLargeSeconds() {
+		new CountDownTimer("1:32:1234");
+	}
+
 }

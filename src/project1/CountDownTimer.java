@@ -1,4 +1,3 @@
-
 package project1;
 
 import java.io.*;
@@ -142,10 +141,6 @@ public class CountDownTimer {
 		}
 	}
 
-	public void dec() {
-		this.seconds--;
-	}
-
 	public void sub(int seconds) {
 		this.seconds -= seconds % 60;
 		this.minutes -= (seconds / 60) % 60;
@@ -153,9 +148,54 @@ public class CountDownTimer {
 	}
 
 	public void add(int seconds) {
-		this.seconds += seconds % 60;
-		this.minutes += (seconds / 60) % 60;
-		this.hours += (seconds / 60) / 60;
+		if(suspend == false) {
+			if(seconds < 0) {
+				throw new IllegalArgumentException();
+			}else {
+				for(int i=0;i<seconds;i++) {
+					inc();
+				}
+			}
+		}
+	}
+
+	public void inc(){
+		if(suspend == false) {
+			if(seconds == 59) {
+				seconds = 0;
+				if(minutes == 59) {
+					seconds = 0;
+					hours += 1;
+				}else {
+					minutes += 1;
+				}
+			}else {
+				seconds += 1;
+			}
+		}
+	}
+
+	public void dec() {
+		if(suspend == false) {
+			if(seconds == 0) {
+				if(minutes == 0) {
+					if(hours == 0){
+						hours = 0;
+						minutes = 0;
+						seconds = 0;
+					}else{
+						hours -= 1;
+						minutes = 59;
+						seconds = 59;
+					}
+				}else {
+					minutes -= 1;
+					seconds = 59;
+				}
+			}else {
+				seconds -= 1;
+			}
+		}
 	}
 
 	public void add(CountDownTimer other) {
@@ -249,6 +289,6 @@ public class CountDownTimer {
 
 	//returns suspend
 	public static boolean isSuspended() {
-		return suspend;//
+		return suspend;
 	}
 }
